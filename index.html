@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>DREAMLY – Yuxu Gündəliyi</title>
+<meta name="theme-color" content="#080c1a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DREAMLY">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c1a;
+    --bg2: #0d1226;
+    --card: #111827;
+    --card2: #161d30;
+    --border: rgba(255,255,255,0.07);
+    --purple: #7c5cbf;
+    --purple-light: #9b7ee0;
+    --purple-glow: rgba(124,92,191,0.35);
+    --teal: #2dd4b8;
+    --orange: #f97316;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --muted2: #9ca3af;
+    --star: rgba(255,255,255,0.6);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  /* PHONE SHELL */
+  .phone {
+    width: 375px;
+    height: 812px;
+    background: var(--bg);
+    border-radius: 48px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 40px 80px rgba(0,0,0,0.8), 0 0 60px rgba(124,92,191,0.15);
+  }
+
+  /* STARS BACKGROUND */
+  .stars {
+    position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background: radial-gradient(ellipse at 30% 20%, rgba(124,92,191,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(45,212,184,0.06) 0%, transparent 50%);
+  }
+  .stars::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 15% 12%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 32% 28%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 48% 8%, rgba(255,255,255,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 65% 20%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 78% 35%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 22% 55%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 88% 15%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 45%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 10% 75%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 68%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 72% 58%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 90% 70%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 85%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 82%, rgba(255,255,255,0.3) 0%, transparent 100%);
+  }
+
+  /* SCREEN CONTENT */
+  .screen {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 76px;
+    display: none;
+    flex-direction: column;
+    z-index: 1;
+    animation: fadeIn 0.3s ease;
+  }
+  .screen.active { display: flex; }
+
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  /* STATUS BAR */
+  .statusbar {
+    height: 44px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.3px;
+    flex-shrink: 0;
+  }
+  .statusbar .time { font-size: 15px; font-weight: 700; }
+  .statusbar .icons { display: flex; gap: 5px; align-items: center; }
+  .statusbar .icons svg { width:16px; height:16px; }
+
+  /* NOTCH */
+  .notch {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 34px;
+    background: #000;
+    border-radius: 0 0 18px 18px;
+    z-index: 10;
+  }
+
+  /* SCROLL CONTENT */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0 20px 20px;
+    scrollbar-width: none;
+  }
+  .content::-webkit-scrollbar { display:none; }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 76px;
+    background: rgba(8,12,26,0.98);
+    backdrop-filter: blur(24px);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 4px 12px;
+    z-index: 10;
+  }
+  .nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    cursor: pointer; padding: 5px 8px; border-radius: 10px;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .nav-item svg { width:20px; height:20px; }
+  .nav-item span { font-size: 8px; font-weight: 500; color: var(--muted); white-space: nowrap; }
+  .nav-item.active span { color: var(--purple-light); }
+  .nav-item.active svg { filter: drop-shadow(0 0 6px var(--purple)); }
+  .nav-item.active::after {
+    content: '';
+    position: absolute; bottom: -5px;
+    width: 4px; height: 4px;
+    background: var(--purple-light);
+    border-radius: 50%;
+  }
+
+  /* ===== HOME SCREEN ===== */
+  .home-header {
+    padding: 12px 0 8px;
+    display: flex; align-items: flex-start; justify-content: space-between;
+  }
+  .home-header .greeting { font-size: 12px; color: var(--muted2); font-weight: 400; margin-bottom: 4px; }
+  .home-header h1 { font-size: 20px; font-weight: 700; line-height: 1.3; }
+  .home-header .weather-icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, #f97316, #fbbf24);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 4px 16px rgba(249,115,22,0.4);
+  }
+
+  .stats-row {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+    margin: 16px 0;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 10px;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  .stat-card:active { transform: scale(0.97); }
+  .stat-card .stat-icon { font-size: 18px; margin-bottom: 6px; }
+  .stat-card .stat-val { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .stat-card .stat-val.purple { color: var(--purple-light); }
+  .stat-card .stat-val.teal { color: var(--teal); }
+  .stat-card .stat-val.orange { color: var(--orange); }
+  .stat-card .stat-label { font-size: 10px; color: var(--muted); }
+
+  .section-title { font-size: 16px; font-weight: 700; margin-bottom: 14px; }
+
+  .empty-state {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px 20px;
+    text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .empty-icon { font-size: 40px; opacity: 0.4; margin-bottom: 4px; }
+  .empty-title { font-size: 14px; font-weight: 600; color: var(--muted2); }
+  .empty-sub { font-size: 12px; color: var(--muted); }
+
+  .fab {
+    position: absolute;
+    bottom: 90px; right: 20px;
+    width: 52px; height: 52px;
+    background: linear-gradient(135deg, #7c5cbf, #9b7ee0);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; border: none;
+    box-shadow: 0 4px 20px var(--purple-glow), 0 0 0 1px rgba(255,255,255,0.1);
+    font-size: 24px; color: #fff;
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 4;
+  }
+  .fab:active { transform: scale(0.92); }
+
+  /* DREAM CARDS */
+  .dream-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .dream-card::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--purple-light);
+    border-radius: 3px 0 0 3px;
+  }
+  .dream-card.nightmare::before { background: #ef4444; }
+  .dream-card.happy::before { background: var(--teal); }
+  .dream-card:active { transform: translateX(2px); }
+  .dream-card .dc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  .dream-card .dc-title { font-size: 14px; font-weight: 600; }
+  .dream-card .dc-date { font-size: 10px; color: var(--muted); }
+  .dream-card .dc-body { font-size: 12px; color: var(--muted2); line-height: 1.6; }
+  .dream-card .dc-tags { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+  .dc-tag {
+    font-size: 10px; padding: 3px 8px;
+    background: rgba(124,92,191,0.2);
+    color: var(--purple-light);
+    border-radius: 20px;
+    border: 1px solid rgba(124,92,191,0.3);
+  }
+  .dc-tag.nightmare { background: rgba(239,68,68,0.15); color: #f87171; border-color: rgba(239,68,68,0.3); }
+  .dc-tag.happy { background: rgba(45,212,184,0.15); color: var(--teal); border-color: rgba(45,212,184,0.3); }
+
+  /* ===== JOURNAL SCREEN ===== */
+  .journal-header {
+    padding: 16px 0 12px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .journal-header h1 { font-size: 22px; font-weight: 700; }
+  .icon-btn {
+    width: 36px; height: 36px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 16px;
+    transition: all 0.2s;
+  }
+  .icon-btn:active { transform: scale(0.93); background: var(--card2); }
+
+  .search-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 14px;
+  }
+  .search-box input {
+    background: none; border: none; outline: none;
+    color: var(--text); font-family: inherit; font-size: 13px;
+    flex: 1;
+  }
+  .search-box input::placeholder { color: var(--muted); }
+
+  .filter-tabs {
+    display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .filter-tabs::-webkit-scrollbar { display:none; }
+  .filter-tab {
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 12px; font-weight: 500;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted2);
+    cursor: pointer; white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .filter-tab.active {
+    background: var(--purple);
+    border-color: var(--purple);
+    color: #fff;
+    box-shadow: 0 2px 12px var(--purple-glow);
+  }
+
+  /* ===== AI SCREEN ===== */
+  .ai-header { padding: 16px 0 20px; }
+  .ai-header h1 { font-size: 22px; font-weight: 700; }
+  .ai-chat-area {
+    flex: 1; overflow-y: auto; scrollbar-width: none;
+    display: flex; flex-direction: column; gap: 12px;
+    padding: 0 0 16px;
+  }
+  .ai-chat-area::-webkit-scrollbar { display: none; }
+  .ai-msg {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px 16px 16px 4px;
+    padding: 14px 16px;
+    font-size: 13px; line-height: 1.6;
+    color: var(--muted2);
+    max-width: 90%;
+    animation: fadeIn 0.4s ease;
+  }
+  .ai-msg .ai-label {
+    font-size: 11px; font-weight: 600;
+    color: var(--purple-light); margin-bottom: 6px;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .user-msg {
+    background: linear-gradient(135deg, rgba(124,92,191,0.3), rgba(124,92,191,0.15));
+    border: 1px solid rgba(124,92,191,0.3);
+    border-radius: 16px 16px 4px 16px;
+    padding: 12px 16px;
+    font-size: 13px; line-height: 1.6;
+    align-self: flex-end;
+    max-width: 85%;
+    animation: fadeIn 0.3s ease;
+  }
+  .ai-input-area {
+    padding: 12px 0 4px;
+    display: flex; gap: 8px; align-items: flex-end;
+  }
+  .ai-input {
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 12px 16px;
+    color: var(--text); font-family: inherit; font-size: 13px;
+    outline: none; resize: none;
+    max-height: 100px;
+    transition: border-color 0.2s;
+  }
+  .ai-input:focus { border-color: rgba(124,92,191,0.5); }
+  .ai-send {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, #7c5cbf, #9b7ee0);
+    border-radius: 12px; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; transition: all 0.2s;
+    box-shadow: 0 2px 12px var(--purple-glow);
+    flex-shrink: 0;
+  }
+  .ai-send:active { transform: scale(0.9); }
+
+  /* ===== STATS SCREEN ===== */
+  .stats-header { padding: 16px 0 14px; }
+  .stats-header h1 { font-size: 22px; font-weight: 700; }
+  .period-tabs {
+    display: flex; gap: 8px; margin-bottom: 16px;
+  }
+  .period-tab {
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 12px; font-weight: 500;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted2);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .period-tab.active {
+    background: var(--purple);
+    border-color: var(--purple);
+    color: #fff;
+    box-shadow: 0 2px 12px var(--purple-glow);
+  }
+
+  .stats-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 18px; }
+  .st-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 12px 8px; text-align: center;
+  }
+  .st-card .val { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .st-card .lbl { font-size: 9px; color: var(--muted); line-height: 1.4; }
+  .st-card .val.purple { color: var(--purple-light); }
+  .st-card .val.orange { color: var(--orange); }
+  .st-card .val.teal { color: var(--teal); }
+
+  .chart-section {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px; margin-bottom: 16px;
+  }
+  .chart-section h3 { font-size: 13px; font-weight: 600; margin-bottom: 14px; }
+  .week-chart {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 6px; height: 70px;
+  }
+  .week-bar-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+  .week-bar-wrap span { font-size: 9px; color: var(--muted); }
+  .week-bar {
+    width: 100%; border-radius: 4px;
+    background: rgba(124,92,191,0.25);
+    transition: height 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .week-bar.today { background: linear-gradient(180deg, #9b7ee0, #7c5cbf); }
+
+  /* Calendar */
+  .calendar { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; }
+  .calendar h3 { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
+  .cal-head { font-size: 9px; color: var(--muted); text-align: center; padding: 3px 0; font-weight: 600; }
+  .cal-day {
+    aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    font-size: 10px; border-radius: 6px; cursor: pointer;
+    position: relative; color: var(--muted2);
+    transition: all 0.2s;
+  }
+  .cal-day:active { transform: scale(0.9); }
+  .cal-day.empty { cursor: default; }
+  .cal-day.today {
+    background: var(--purple);
+    color: #fff; font-weight: 700;
+    box-shadow: 0 2px 8px var(--purple-glow);
+  }
+  .cal-day.has-dream::after {
+    content: '';
+    position: absolute; bottom: 2px;
+    width: 3px; height: 3px;
+    background: var(--teal);
+    border-radius: 50%;
+  }
+  .cal-legend {
+    display: flex; gap: 12px; margin-top: 8px; justify-content: center;
+    font-size: 9px; color: var(--muted);
+  }
+  .cal-legend span { display: flex; align-items: center; gap: 4px; }
+  .cal-legend .dot { width: 6px; height: 6px; border-radius: 50%; }
+
+  /* Records */
+  .records { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; }
+  .records h3 { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+  .record-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0; border-top: 1px solid var(--border);
+  }
+  .record-item:last-child { border-bottom: none; }
+  .record-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; font-size: 14px;
+    flex-shrink: 0;
+  }
+  .record-icon.green { background: rgba(45,212,184,0.15); }
+  .record-icon.purple { background: rgba(124,92,191,0.2); }
+  .record-icon.red { background: rgba(239,68,68,0.15); }
+  .record-info { flex: 1; }
+  .record-info .ri-label { font-size: 12px; font-weight: 500; color: var(--muted2); }
+  .record-val { font-size: 13px; font-weight: 700; color: var(--teal); }
+
+  /* ===== SETTINGS SCREEN ===== */
+  .settings-header { padding: 16px 0 14px; }
+  .settings-header h1 { font-size: 22px; font-weight: 700; }
+  .premium-card {
+    background: linear-gradient(135deg, #b45309, #d97706, #f59e0b);
+    border-radius: var(--radius); padding: 16px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px; cursor: pointer;
+    box-shadow: 0 4px 20px rgba(245,158,11,0.3);
+    transition: transform 0.2s;
+  }
+  .premium-card:active { transform: scale(0.98); }
+  .premium-card .pc-left { display: flex; align-items: center; gap: 10px; }
+  .premium-card .pc-title { font-weight: 700; font-size: 15px; color: #fff; }
+  .premium-card .pc-sub { font-size: 11px; color: rgba(255,255,255,0.8); margin-top: 2px; }
+  .premium-card .pc-arrow { font-size: 18px; color: rgba(255,255,255,0.9); }
+
+  .settings-section { margin-bottom: 20px; }
+  .settings-section-title {
+    font-size: 10px; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 8px;
+  }
+  .settings-group {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+  }
+  .settings-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; border-top: 1px solid var(--border);
+    cursor: pointer; transition: background 0.2s;
+  }
+  .settings-item:last-child { border-bottom: none; }
+  .settings-item:active { background: var(--card2); }
+  .settings-item .si-left { display: flex; align-items: center; gap: 10px; }
+  .settings-item .si-icon { font-size: 16px; }
+  .settings-item .si-label { font-size: 13px; font-weight: 500; }
+  .settings-item .si-right { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+
+  /* Language buttons */
+  .lang-group {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 12px; margin-bottom: 0;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .lang-btn {
+    padding: 8px 14px; border-radius: 8px;
+    font-size: 12px; font-weight: 500; cursor: pointer;
+    border: 1px solid var(--border); background: var(--card2);
+    color: var(--muted2); transition: all 0.2s; font-family: inherit;
+  }
+  .lang-btn.active {
+    background: var(--purple); border-color: var(--purple); color: #fff;
+    box-shadow: 0 2px 10px var(--purple-glow);
+  }
+
+  /* Toggle */
+  .toggle {
+    width: 44px; height: 24px;
+    background: var(--purple);
+    border-radius: 12px;
+    position: relative; cursor: pointer;
+    box-shadow: 0 0 8px var(--purple-glow);
+  }
+  .toggle::after {
+    content: '';
+    position: absolute; top: 3px; right: 3px;
+    width: 18px; height: 18px;
+    background: #fff; border-radius: 50%;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    transition: right 0.2s;
+  }
+  .toggle.off { background: var(--muted); box-shadow: none; }
+  .toggle.off::after { right: 23px; }
+
+  /* VERSION TAG */
+  .version-tag {
+    font-size: 12px; background: rgba(124,92,191,0.15);
+    border: 1px solid rgba(124,92,191,0.25);
+    color: var(--purple-light); padding: 3px 10px; border-radius: 20px;
+  }
+
+  /* ADD DREAM MODAL */
+  .modal-overlay {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.7); z-index: 25;
+    display: none; align-items: flex-end;
+    animation: fadeIn 0.2s ease;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    width: 100%;
+    background: #121829;
+    border-radius: 28px 28px 0 0;
+    border-top: 1px solid var(--border);
+    padding: 20px 20px 40px;
+    animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    max-height: 80vh; overflow-y: auto;
+  }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .modal-handle {
+    width: 36px; height: 4px;
+    background: var(--border); border-radius: 2px;
+    margin: 0 auto 18px;
+  }
+  .modal h2 { font-size: 18px; font-weight: 700; margin-bottom: 18px; }
+  .form-group { margin-bottom: 14px; }
+  .form-group label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; display: block; }
+  .form-input {
+    width: 100%;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 12px 14px;
+    color: var(--text); font-family: inherit; font-size: 13px;
+    outline: none; transition: border-color 0.2s;
+  }
+  .form-input:focus { border-color: rgba(124,92,191,0.5); }
+  textarea.form-input { resize: none; height: 90px; }
+  .type-selector { display: flex; gap: 8px; }
+  .type-btn {
+    flex: 1; padding: 9px; border-radius: 8px;
+    font-size: 11px; font-weight: 500; cursor: pointer;
+    border: 1px solid var(--border); background: var(--card);
+    color: var(--muted2); transition: all 0.2s; font-family: inherit;
+    text-align: center;
+  }
+  .type-btn.active.normal { background: rgba(124,92,191,0.25); border-color: var(--purple); color: var(--purple-light); }
+  .type-btn.active.happy { background: rgba(45,212,184,0.15); border-color: var(--teal); color: var(--teal); }
+  .type-btn.active.nightmare { background: rgba(239,68,68,0.15); border-color: #f87171; color: #f87171; }
+  .submit-btn {
+    width: 100%; padding: 14px;
+    background: linear-gradient(135deg, #7c5cbf, #9b7ee0);
+    border: none; border-radius: var(--radius-sm);
+    color: #fff; font-family: inherit; font-size: 14px; font-weight: 600;
+    cursor: pointer; margin-top: 8px;
+    box-shadow: 0 4px 20px var(--purple-glow);
+    transition: all 0.2s;
+  }
+  .submit-btn:active { transform: scale(0.98); }
+
+  /* LOADING DOTS */
+  .loading-dots { display: flex; gap: 4px; align-items: center; }
+  .loading-dots span {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--purple-light);
+    animation: blink 1.2s infinite;
+  }
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 4px 20px rgba(124,92,191,0.5); }
+    50% { box-shadow: 0 4px 30px rgba(124,92,191,0.8), 0 0 0 4px rgba(124,92,191,0.15); }
+  }
+  @keyframes blink { 0%,80%,100%{opacity:0.2} 40%{opacity:1} }
+
+  /* ICONS (inline SVG paths) */
+  .icon-moon { color: var(--purple-light); }
+  .icon-teal { color: var(--teal); }
+  .icon-orange { color: var(--orange); }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="notch"></div>
+  <div class="stars"></div>
+
+
+  <!-- ===== HOME SCREEN ===== -->
+  <div class="screen active" id="screen-home">
+    <div class="statusbar">
+      <span class="time">9:41</span>
+      <div class="icons">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 6l5 2v8l-5 2V6zm7 2h2v8H8V8zm3 0h2v8h-2V8zm3 0h2v8h-2V8zm3-2l5-2v16l-5-2V6z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.5a13 13 0 0121 0M5 12.5a9 9 0 0114 0M8.5 16.5a5 5 0 017 0M12 20h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M22 11v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="4" y="9" width="10" height="7" rx="1" fill="currentColor"/></svg>
+      </div>
+    </div>
+    <div class="content">
+      <div class="home-header">
+        <div>
+          <div class="greeting">Sabahınız xeyir</div>
+          <h1>Bu gecə nə yuxu<br>gördün?</h1>
+        </div>
+        <div class="weather-icon">☀️</div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon">🌙</div>
+          <div class="stat-val purple" id="home-count">0</div>
+          <div class="stat-label">Yuxu</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⏱️</div>
+          <div class="stat-val teal">0.0</div>
+          <div class="stat-label">Yuxu saatı</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-val orange" id="home-zencir">0</div>
+          <div class="stat-label">Zəncir</div>
+        </div>
+      </div>
+
+      <div class="section-title">Yuxularım</div>
+
+      <div id="home-dreams-list">
+        <div class="empty-state" id="home-empty">
+          <div class="empty-icon">🌙</div>
+          <div class="empty-title">Hələ yuxu yoxdur</div>
+          <div class="empty-sub">İlk yuxunuzu əlavə edin</div>
+        </div>
+      </div>
+    </div>
+    <button class="fab" onclick="openModal()">+</button>
+  </div>
+
+  <!-- ===== JOURNAL SCREEN ===== -->
+  <div class="screen" id="screen-journal">
+    <div style="padding: 0 20px; flex-shrink:0;">
+      <div class="journal-header">
+        <h1>Yuxularım</h1>
+        <div style="display:flex;gap:8px;">
+          <div class="icon-btn">🔒</div>
+          <div class="icon-btn" onclick="openModal()">+</div>
+        </div>
+      </div>
+      <div class="search-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" placeholder="Başlıq..." id="search-input" oninput="filterDreams()">
+      </div>
+      <div class="filter-tabs">
+        <div class="filter-tab active" onclick="setFilter('all',this)">Yuxularım</div>
+        <div class="filter-tab" onclick="setFilter('happy',this)">Xoş yuxu</div>
+        <div class="filter-tab" onclick="setFilter('nightmare',this)">Kabus</div>
+        <div class="filter-tab" onclick="setFilter('hidden',this)">Gizli yuxu</div>
+      </div>
+    </div>
+    <div class="content" style="padding-top:4px;" id="journal-list">
+      <div class="empty-state" id="journal-empty">
+        <div class="empty-icon">🌙</div>
+        <div class="empty-title">Hələ yuxu yoxdur</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== AI SCREEN ===== -->
+  <div class="screen" id="screen-ai" style="padding: 0 20px;">
+    <div class="ai-header">
+      <h1>AI Analiz</h1>
+    </div>
+    <div class="ai-chat-area" id="ai-chat">
+      <div class="empty-state" id="ai-empty" style="margin-top:60px;">
+        <div class="empty-icon" style="font-size:48px;">🧠</div>
+        <div class="empty-title">Hələ yuxu yoxdur</div>
+        <div class="empty-sub">Yuxu əlavə etdikdən sonra<br>AI analiz edəcək</div>
+      </div>
+    </div>
+    <div class="ai-input-area" id="ai-input-area" style="display:none;">
+      <textarea class="ai-input" id="ai-input" rows="1" placeholder="Yuxunuz haqqında soruşun..."></textarea>
+      <button class="ai-send" onclick="sendAI()">➤</button>
+    </div>
+  </div>
+
+  <!-- ===== STATS SCREEN ===== -->
+  <div class="screen" id="screen-stats">
+    <div style="padding: 0 20px; flex-shrink:0;">
+      <div class="stats-header"><h1>Statistika</h1></div>
+      <div class="period-tabs">
+        <div class="period-tab active">Bu həftə</div>
+        <div class="period-tab" onclick="switchPeriod(this)">Bu ay</div>
+        <div class="period-tab" onclick="switchPeriod(this)">Hamısı</div>
+      </div>
+      <div class="stats-cards">
+        <div class="st-card">
+          <div class="val purple" id="stat-total">0</div>
+          <div class="lbl">Ümumi yuxular</div>
+        </div>
+        <div class="st-card">
+          <div class="val orange" id="stat-zencir">0</div>
+          <div class="lbl">Zəncir</div>
+        </div>
+        <div class="st-card">
+          <div class="val teal">0.0</div>
+          <div class="lbl">Yuxu saatı</div>
+        </div>
+      </div>
+    </div>
+    <div class="content" style="padding-top:0;">
+      <div class="chart-section">
+        <h3>Həftəlik yuxular</h3>
+        <div class="week-chart" id="week-chart">
+          <!-- Generated by JS -->
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;">
+          <span style="font-size:9px;color:var(--muted);">W</span>
+          <span style="font-size:9px;color:var(--muted);">T</span>
+          <span style="font-size:9px;color:var(--muted);">F</span>
+          <span style="font-size:9px;color:var(--muted);">S</span>
+          <span style="font-size:9px;color:var(--muted);">S</span>
+          <span style="font-size:9px;color:var(--muted);">M</span>
+          <span style="font-size:9px;color:var(--muted);">T</span>
+        </div>
+      </div>
+
+      <div class="calendar">
+        <h3>Aylıq görünüş</h3>
+        <div class="cal-grid" id="cal-grid"></div>
+        <div class="cal-legend">
+          <span><div class="dot" style="background:var(--teal)"></div>Xoş yuxu</span>
+          <span><div class="dot" style="background:#ef4444"></div>Kabus</span>
+          <span><div class="dot" style="background:var(--purple-light)"></div>Normal</span>
+        </div>
+      </div>
+
+      <div class="records">
+        <h3>Yuxu rekordları</h3>
+        <div class="record-item">
+          <div class="record-icon green">📖</div>
+          <div class="record-info"><div class="ri-label">Ən uzun yuxu</div></div>
+          <div class="record-val" id="rec-longest">0w</div>
+        </div>
+        <div class="record-item">
+          <div class="record-icon purple">💎</div>
+          <div class="record-info"><div class="ri-label">Ən çox simvol</div></div>
+          <div class="record-val" id="rec-chars">0</div>
+        </div>
+        <div class="record-item">
+          <div class="record-icon red">⚡</div>
+          <div class="record-info"><div class="ri-label">Ən qorxunc</div></div>
+          <div class="record-val" id="rec-nightmare" style="color:var(--orange)">0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SETTINGS SCREEN ===== -->
+  <div class="screen" id="screen-settings">
+    <div style="padding: 0 20px; flex-shrink:0;">
+      <div class="settings-header"><h1>Parametrlər</h1></div>
+    </div>
+    <div class="content" style="padding-top:0;">
+      <div class="premium-card">
+        <div class="pc-left">
+          <span style="font-size:22px;">⭐</span>
+          <div>
+            <div class="pc-title">DREAMLY Premium</div>
+            <div class="pc-sub">$2.99/ ay</div>
+          </div>
+        </div>
+        <div class="pc-arrow">›</div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Dil</div>
+        <div class="lang-group">
+          <button class="lang-btn active" onclick="setLang(this)">Azərbaycan</button>
+          <button class="lang-btn" onclick="setLang(this)">Türkçe</button>
+          <button class="lang-btn" onclick="setLang(this)">English</button>
+          <button class="lang-btn" onclick="setLang(this)">Русский</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Bildirişlər</div>
+        <div class="settings-group">
+          <div class="settings-item" onclick="toggleNotif(this)">
+            <div class="si-left">
+              <span class="si-icon">🔔</span>
+              <span class="si-label">Gündəlik xatırlatma</span>
+            </div>
+            <div class="toggle" id="notif-toggle"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Gizli arxiv</div>
+        <div class="settings-group">
+          <div class="settings-item">
+            <div class="si-left">
+              <span class="si-icon">🔒</span>
+              <span class="si-label">Gizli arxiv</span>
+            </div>
+            <div class="si-right" style="background:rgba(124,92,191,0.15);border:1px solid rgba(124,92,191,0.3);border-radius:20px;padding:4px 10px;color:var(--purple-light);font-size:11px;">PIN daxil edin</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Haqqında</div>
+        <div class="settings-group">
+          <div class="settings-item">
+            <div class="si-left">
+              <span class="si-icon">ℹ️</span>
+              <span class="si-label">Versiya</span>
+            </div>
+            <div class="version-tag">1.0.0</div>
+          </div>
+          <div class="settings-item">
+            <div class="si-left">
+              <span class="si-icon">⭐</span>
+              <span class="si-label">DREAMLY</span>
+            </div>
+            <div class="si-right">›</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ADD DREAM MODAL -->
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <h2>Yeni yuxu əlavə et</h2>
+      <div class="form-group">
+        <label>Başlıq</label>
+        <input class="form-input" type="text" id="dream-title" placeholder="Yuxunun adı...">
+      </div>
+      <div class="form-group">
+        <label>Təsvir</label>
+        <textarea class="form-input" id="dream-body" placeholder="Yuxunuzu ətraflı yazın..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Növü</label>
+        <div class="type-selector">
+          <button class="type-btn active normal" onclick="setType('normal',this)">🌙 Normal</button>
+          <button class="type-btn" onclick="setType('happy',this)">✨ Xoş yuxu</button>
+          <button class="type-btn" onclick="setType('nightmare',this)">👹 Kabus</button>
+        </div>
+      </div>
+      <button class="submit-btn" onclick="saveDream()">Saxla</button>
+    </div>
+  </div>
+
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <div class="nav-item active" onclick="navigate('home',this)" id="nav-home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#9b7ee0" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Əsas</span>
+    </div>
+    <div class="nav-item" onclick="navigate('journal',this)" id="nav-journal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      <span>Gündəlik</span>
+    </div>
+    <div class="nav-item" onclick="navigate('ai',this)" id="nav-ai">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      <span>AI Analiz</span>
+    </div>
+    <div class="nav-item" onclick="navigate('stats',this)" id="nav-stats">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      <span>Statistika</span>
+    </div>
+    <div class="nav-item" onclick="navigate('settings',this)" id="nav-settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span>Parametrlər</span>
+    </div>
+  </nav>
+
+  <!-- INSTALL PWA BUTTON -->
+  <div id="install-btn" onclick="installPWA()" style="
+    display:none; position:absolute; bottom:88px; left:50%; transform:translateX(-50%);
+    background:linear-gradient(135deg,#7c5cbf,#9b7ee0);
+    color:#fff; font-family:'Sora',sans-serif; font-size:12px; font-weight:600;
+    padding:10px 20px; border-radius:24px; cursor:pointer; z-index:15;
+    align-items:center; gap:8px; white-space:nowrap;
+    box-shadow:0 4px 20px rgba(124,92,191,0.5), 0 0 0 1px rgba(255,255,255,0.1);
+    animation: pulse 2s infinite;
+  ">
+    <span>📲</span> Tətbiqi quraşdır
+  </div>
+  <!-- YOZMA MODAL -->
+  <div class="modal-overlay" id="yozma-overlay" onclick="closeYozmaOutside(event)">
+    <div class="modal" style="max-height:85vh;">
+      <div class="modal-handle"></div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,#7c5cbf,#9b7ee0);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">🧠</div>
+        <div>
+          <div style="font-size:16px;font-weight:700;" id="yozma-title">Yuxu Yozması</div>
+          <div style="font-size:11px;color:var(--muted);">DREAMLY AI tərəfindən</div>
+        </div>
+      </div>
+      <div id="yozma-dream-info" style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-bottom:14px;font-size:12px;color:var(--muted2);line-height:1.6;"></div>
+      <div id="yozma-content" style="font-size:13px;line-height:1.7;color:var(--muted2);">
+        <div style="display:flex;align-items:center;gap:8px;color:var(--purple-light);font-size:12px;">
+          <div class="loading-dots"><span></span><span></span><span></span></div>
+          <span id="yozma-loading-text">Yuxunuz analiz edilir...</span>
+        </div>
+      </div>
+      <button class="submit-btn" style="margin-top:18px;background:linear-gradient(135deg,rgba(124,92,191,0.3),rgba(124,92,191,0.15));border:1px solid rgba(124,92,191,0.4);color:var(--purple-light);" onclick="closeYozma()">Bağla</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ===== I18N =====
+const TRANSLATIONS = {
+  az: {
+    appTitle: 'DREAMLY – Yuxu Gündəliyi',
+    greeting: 'Sabahınız xeyir',
+    homeQuestion: 'Bu gecə nə yuxu\ngördün?',
+    statDream: 'Yuxu', statHours: 'Yuxu saatı', statStreak: 'Zəncir',
+    myDreams: 'Yuxularım',
+    emptyTitle: 'Hələ yuxu yoxdur', emptySub: 'İlk yuxunuzu əlavə edin',
+    navHome: 'Əsas', navJournal: 'Gündəlik', navAI: 'AI Analiz', navStats: 'Statistika', navSettings: 'Parametrlər',
+    searchPlaceholder: 'Başlıq...',
+    filterAll: 'Yuxularım', filterHappy: 'Xoş yuxu', filterNightmare: 'Kabus', filterHidden: 'Gizli yuxu',
+    aiTitle: 'AI Analiz', aiEmptySub: 'Yuxu əlavə etdikdən sonra\nAI analiz edəcək',
+    aiPlaceholder: 'Yuxunuz haqqında soruşun...',
+    statsTitle: 'Statistika', thisWeek: 'Bu həftə', thisMonth: 'Bu ay', allTime: 'Hamısı',
+    totalDreams: 'Ümumi yuxular', weeklyDreams: 'Həftəlik yuxular', monthlyView: 'Aylıq görünüş',
+    dreamRecords: 'Yuxu rekordları', longestDream: 'Ən uzun yuxu', mostChars: 'Ən çox simvol', scariest: 'Ən qorxunc',
+    calHeads: ['B.e','Ç.a','Ç','C.a','C','Ş','B'],
+    calLegend: ['Xoş yuxu','Kabus','Normal'],
+    settingsTitle: 'Parametrlər',
+    premiumSub: '$2.99/ ay',
+    langSection: 'Dil', notifSection: 'Bildirişlər', hiddenSection: 'Gizli arxiv', aboutSection: 'Haqqında',
+    dailyReminder: 'Gündəlik xatırlatma', hiddenArchive: 'Gizli arxiv', pinEnter: 'PIN daxil edin',
+    version: 'Versiya',
+    modalTitle: 'Yeni yuxu əlavə et', titleLabel: 'Başlıq', titlePlaceholder: 'Yuxunun adı...',
+    bodyLabel: 'Təsvir', bodyPlaceholder: 'Yuxunuzu ətraflı yazın...',
+    typeLabel: 'Növü', typeNormal: '🌙 Normal', typeHappy: '✨ Xoş yuxu', typeNightmare: '👹 Kabus',
+    saveBtn: 'Saxla',
+    tagNormal: '🌙 Normal', tagHappy: '✨ Xoş yuxu', tagNightmare: '👹 Kabus',
+    aiSystem: 'Sən DREAMLY adlı yuxu analiz edən AI köməkçisisən. İstifadəçinin yuxularını Azərbaycan dilində psixoloji və simvolik baxımdan analiz et. Qısa, aydın və maraqlı cavablar ver.',
+    aiError: 'Bağlantı xətası. Zəhmət olmasa yenidən cəhd edin.', aiNoReply: 'Üzr istəyirəm, cavab ala bilmədim.',
+    locale: 'az-AZ'
+  },
+  tr: {
+    appTitle: 'DREAMLY – Rüya Günlüğü',
+    greeting: 'Günaydın',
+    homeQuestion: 'Bu gece ne\nrüya gördün?',
+    statDream: 'Rüya', statHours: 'Uyku saati', statStreak: 'Seri',
+    myDreams: 'Rüyalarım',
+    emptyTitle: 'Henüz rüya yok', emptySub: 'İlk rüyanı ekle',
+    navHome: 'Ana Sayfa', navJournal: 'Günlük', navAI: 'AI Analiz', navStats: 'İstatistik', navSettings: 'Ayarlar',
+    searchPlaceholder: 'Başlık...',
+    filterAll: 'Rüyalarım', filterHappy: 'Güzel rüya', filterNightmare: 'Kabus', filterHidden: 'Gizli rüya',
+    aiTitle: 'AI Analiz', aiEmptySub: 'Rüya ekledikten sonra\nAI analiz edecek',
+    aiPlaceholder: 'Rüyanız hakkında sorun...',
+    statsTitle: 'İstatistikler', thisWeek: 'Bu hafta', thisMonth: 'Bu ay', allTime: 'Tümü',
+    totalDreams: 'Toplam rüyalar', weeklyDreams: 'Haftalık rüyalar', monthlyView: 'Aylık görünüm',
+    dreamRecords: 'Rüya rekorları', longestDream: 'En uzun rüya', mostChars: 'En çok karakter', scariest: 'En korkunç',
+    calHeads: ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'],
+    calLegend: ['Güzel rüya','Kabus','Normal'],
+    settingsTitle: 'Ayarlar',
+    premiumSub: '$2.99/ ay',
+    langSection: 'Dil', notifSection: 'Bildirimler', hiddenSection: 'Gizli arşiv', aboutSection: 'Hakkında',
+    dailyReminder: 'Günlük hatırlatma', hiddenArchive: 'Gizli arşiv', pinEnter: 'PIN gir',
+    version: 'Sürüm',
+    modalTitle: 'Yeni rüya ekle', titleLabel: 'Başlık', titlePlaceholder: 'Rüyanın adı...',
+    bodyLabel: 'Açıklama', bodyPlaceholder: 'Rüyanı detaylı yaz...',
+    typeLabel: 'Tür', typeNormal: '🌙 Normal', typeHappy: '✨ Güzel rüya', typeNightmare: '👹 Kabus',
+    saveBtn: 'Kaydet',
+    tagNormal: '🌙 Normal', tagHappy: '✨ Güzel rüya', tagNightmare: '👹 Kabus',
+    aiSystem: 'Sen DREAMLY adlı rüya analiz eden AI asistanısın. Kullanıcının rüyalarını Türkçe olarak psikolojik ve sembolik açıdan analiz et. Kısa, net ve ilgi çekici cevaplar ver.',
+    aiError: 'Bağlantı hatası. Lütfen tekrar deneyin.', aiNoReply: 'Üzgünüm, cevap alamadım.',
+    locale: 'tr-TR'
+  },
+  en: {
+    appTitle: 'DREAMLY – Dream Journal',
+    greeting: 'Good morning',
+    homeQuestion: 'What did you\ndream last night?',
+    statDream: 'Dreams', statHours: 'Sleep hours', statStreak: 'Streak',
+    myDreams: 'My Dreams',
+    emptyTitle: 'No dreams yet', emptySub: 'Add your first dream',
+    navHome: 'Home', navJournal: 'Journal', navAI: 'AI Analysis', navStats: 'Statistics', navSettings: 'Settings',
+    searchPlaceholder: 'Search...',
+    filterAll: 'All Dreams', filterHappy: 'Good dream', filterNightmare: 'Nightmare', filterHidden: 'Hidden',
+    aiTitle: 'AI Analysis', aiEmptySub: 'Add a dream first and\nAI will analyze it',
+    aiPlaceholder: 'Ask about your dream...',
+    statsTitle: 'Statistics', thisWeek: 'This week', thisMonth: 'This month', allTime: 'All time',
+    totalDreams: 'Total dreams', weeklyDreams: 'Weekly dreams', monthlyView: 'Monthly view',
+    dreamRecords: 'Dream records', longestDream: 'Longest dream', mostChars: 'Most characters', scariest: 'Scariest',
+    calHeads: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+    calLegend: ['Good dream','Nightmare','Normal'],
+    settingsTitle: 'Settings',
+    premiumSub: '$2.99/ month',
+    langSection: 'Language', notifSection: 'Notifications', hiddenSection: 'Hidden archive', aboutSection: 'About',
+    dailyReminder: 'Daily reminder', hiddenArchive: 'Hidden archive', pinEnter: 'Enter PIN',
+    version: 'Version',
+    modalTitle: 'Add new dream', titleLabel: 'Title', titlePlaceholder: 'Dream name...',
+    bodyLabel: 'Description', bodyPlaceholder: 'Describe your dream in detail...',
+    typeLabel: 'Type', typeNormal: '🌙 Normal', typeHappy: '✨ Good dream', typeNightmare: '👹 Nightmare',
+    saveBtn: 'Save',
+    tagNormal: '🌙 Normal', tagHappy: '✨ Good dream', tagNightmare: '👹 Nightmare',
+    aiSystem: 'You are DREAMLY, an AI dream analysis assistant. Analyze the user\'s dreams psychologically and symbolically in English. Give concise, clear and insightful responses.',
+    aiError: 'Connection error. Please try again.', aiNoReply: 'Sorry, could not get a response.',
+    locale: 'en-US'
+  },
+  ru: {
+    appTitle: 'DREAMLY – Дневник Снов',
+    greeting: 'Доброе утро',
+    homeQuestion: 'Что тебе\nприснилось?',
+    statDream: 'Снов', statHours: 'Часов сна', statStreak: 'Серия',
+    myDreams: 'Мои сны',
+    emptyTitle: 'Снов пока нет', emptySub: 'Добавьте первый сон',
+    navHome: 'Главная', navJournal: 'Дневник', navAI: 'AI Анализ', navStats: 'Статистика', navSettings: 'Настройки',
+    searchPlaceholder: 'Поиск...',
+    filterAll: 'Все сны', filterHappy: 'Хороший сон', filterNightmare: 'Кошмар', filterHidden: 'Скрытые',
+    aiTitle: 'AI Анализ', aiEmptySub: 'Добавьте сон и AI\nпроанализирует его',
+    aiPlaceholder: 'Спросите о вашем сне...',
+    statsTitle: 'Статистика', thisWeek: 'Эта неделя', thisMonth: 'Этот месяц', allTime: 'Всё время',
+    totalDreams: 'Всего снов', weeklyDreams: 'Снов за неделю', monthlyView: 'Вид по месяцу',
+    dreamRecords: 'Рекорды снов', longestDream: 'Самый длинный', mostChars: 'Больше символов', scariest: 'Самый страшный',
+    calHeads: ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],
+    calLegend: ['Хороший сон','Кошмар','Обычный'],
+    settingsTitle: 'Настройки',
+    premiumSub: '$2.99/ мес',
+    langSection: 'Язык', notifSection: 'Уведомления', hiddenSection: 'Скрытый архив', aboutSection: 'О приложении',
+    dailyReminder: 'Ежедневное напоминание', hiddenArchive: 'Скрытый архив', pinEnter: 'Введите PIN',
+    version: 'Версия',
+    modalTitle: 'Добавить новый сон', titleLabel: 'Заголовок', titlePlaceholder: 'Название сна...',
+    bodyLabel: 'Описание', bodyPlaceholder: 'Опишите ваш сон подробно...',
+    typeLabel: 'Тип', typeNormal: '🌙 Обычный', typeHappy: '✨ Хороший сон', typeNightmare: '👹 Кошмар',
+    saveBtn: 'Сохранить',
+    tagNormal: '🌙 Обычный', tagHappy: '✨ Хороший', tagNightmare: '👹 Кошмар',
+    aiSystem: 'Ты AI-ассистент DREAMLY для анализа снов. Анализируй сны пользователя психологически и символически на русском языке. Давай краткие, чёткие и интересные ответы.',
+    aiError: 'Ошибка соединения. Попробуйте снова.', aiNoReply: 'Извините, не удалось получить ответ.',
+    locale: 'ru-RU'
+  }
+};
+
+let currentLang = localStorage.getItem('dreamly_lang') || 'az';
+function t(key) { return TRANSLATIONS[currentLang][key] || TRANSLATIONS['az'][key] || key; }
+
+function applyLanguage() {
+  const T = TRANSLATIONS[currentLang];
+  document.title = T.appTitle;
+  // Home
+  const hg = document.querySelector('.home-header .greeting'); if(hg) hg.textContent = T.greeting;
+  const hh = document.querySelector('.home-header h1'); if(hh) hh.innerHTML = T.homeQuestion.replace('\n','<br>');
+  const sl = document.querySelectorAll('.stat-label'); if(sl[0]) sl[0].textContent = T.statDream; if(sl[1]) sl[1].textContent = T.statHours; if(sl[2]) sl[2].textContent = T.statStreak;
+  const st = document.querySelector('#screen-home .section-title'); if(st) st.textContent = T.myDreams;
+  // Journal header
+  const jh = document.querySelector('#screen-journal .journal-header h1'); if(jh) jh.textContent = T.myDreams;
+  const si = document.getElementById('search-input'); if(si) si.placeholder = T.searchPlaceholder;
+  const ftabs = document.querySelectorAll('.filter-tab');
+  if(ftabs[0]) ftabs[0].textContent = T.filterAll;
+  if(ftabs[1]) ftabs[1].textContent = T.filterHappy;
+  if(ftabs[2]) ftabs[2].textContent = T.filterNightmare;
+  if(ftabs[3]) ftabs[3].textContent = T.filterHidden;
+  // AI
+  const aih = document.querySelector('#screen-ai .ai-header h1'); if(aih) aih.textContent = T.aiTitle;
+  const aiet = document.querySelector('#ai-empty .empty-title'); if(aiet) aiet.textContent = T.emptyTitle;
+  const aies = document.querySelector('#ai-empty .empty-sub'); if(aies) aies.innerHTML = T.aiEmptySub.replace('\n','<br>');
+  const aip = document.getElementById('ai-input'); if(aip) aip.placeholder = T.aiPlaceholder;
+  // Stats
+  const sth = document.querySelector('#screen-stats .stats-header h1'); if(sth) sth.textContent = T.statsTitle;
+  const ptabs = document.querySelectorAll('.period-tab');
+  if(ptabs[0]) ptabs[0].textContent = T.thisWeek;
+  if(ptabs[1]) ptabs[1].textContent = T.thisMonth;
+  if(ptabs[2]) ptabs[2].textContent = T.allTime;
+  const stlbls = document.querySelectorAll('.st-card .lbl');
+  if(stlbls[0]) stlbls[0].textContent = T.totalDreams;
+  if(stlbls[1]) stlbls[1].textContent = T.statStreak;
+  if(stlbls[2]) stlbls[2].textContent = T.statHours;
+  const csh = document.querySelector('.chart-section h3'); if(csh) csh.textContent = T.weeklyDreams;
+  const calh = document.querySelector('.calendar h3'); if(calh) calh.textContent = T.monthlyView;
+  const rech = document.querySelector('.records h3'); if(rech) rech.textContent = T.dreamRecords;
+  const rilbls = document.querySelectorAll('.ri-label');
+  if(rilbls[0]) rilbls[0].textContent = T.longestDream;
+  if(rilbls[1]) rilbls[1].textContent = T.mostChars;
+  if(rilbls[2]) rilbls[2].textContent = T.scariest;
+  const calleg = document.querySelectorAll('.cal-legend span');
+  calleg.forEach((el,i) => { const dot = el.querySelector('.dot'); const txt = T.calLegend[i]; if(dot && txt) el.innerHTML = el.querySelector('.dot').outerHTML + txt; });
+  // Settings
+  const seth = document.querySelector('#screen-settings .settings-header h1'); if(seth) seth.textContent = T.settingsTitle;
+  const pcSub = document.querySelector('.premium-card .pc-sub'); if(pcSub) pcSub.textContent = T.premiumSub;
+  const secTitles = document.querySelectorAll('.settings-section-title');
+  if(secTitles[0]) secTitles[0].textContent = T.langSection;
+  if(secTitles[1]) secTitles[1].textContent = T.notifSection;
+  if(secTitles[2]) secTitles[2].textContent = T.hiddenSection;
+  if(secTitles[3]) secTitles[3].textContent = T.aboutSection;
+  const siLbls = document.querySelectorAll('.si-label');
+  if(siLbls[0]) siLbls[0].textContent = T.dailyReminder;
+  if(siLbls[1]) siLbls[1].textContent = T.hiddenArchive;
+  const pinBtn = document.querySelector('.settings-item .si-right[style]'); if(pinBtn) pinBtn.textContent = T.pinEnter;
+  const verLbl = document.querySelectorAll('.si-label')[2]; if(verLbl) verLbl.textContent = T.version;
+  // Nav
+  const navSpans = document.querySelectorAll('.nav-item span');
+  const navKeys = ['navHome','navJournal','navAI','navStats','navSettings'];
+  navSpans.forEach((s,i) => { if(T[navKeys[i]]) s.textContent = T[navKeys[i]]; });
+  // Modal
+  const mh = document.querySelector('.modal h2'); if(mh) mh.textContent = T.modalTitle;
+  const fLabels = document.querySelectorAll('.form-group label');
+  if(fLabels[0]) fLabels[0].textContent = T.titleLabel;
+  if(fLabels[1]) fLabels[1].textContent = T.bodyLabel;
+  if(fLabels[2]) fLabels[2].textContent = T.typeLabel;
+  const fTitle = document.getElementById('dream-title'); if(fTitle) fTitle.placeholder = T.titlePlaceholder;
+  const fBody = document.getElementById('dream-body'); if(fBody) fBody.placeholder = T.bodyPlaceholder;
+  const typeBtns = document.querySelectorAll('.type-btn');
+  if(typeBtns[0]) typeBtns[0].textContent = T.typeNormal;
+  if(typeBtns[1]) typeBtns[1].textContent = T.typeHappy;
+  if(typeBtns[2]) typeBtns[2].textContent = T.typeNightmare;
+  const sub = document.querySelector('.submit-btn'); if(sub) sub.textContent = T.saveBtn;
+  // Re-render dynamic parts
+  renderHome(); renderJournal(); buildCalendar();
+}
+
+// ===== STATE =====
+let dreams = JSON.parse(localStorage.getItem('dreamly_dreams') || '[]');
+let currentFilter = 'all';
+let currentDreamType = 'normal';
+
+// ===== NAVIGATION =====
+function navigate(tab, el) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.remove('active');
+    n.querySelector('svg').setAttribute('stroke', '#6b7280');
+  });
+  document.getElementById('screen-' + tab).classList.add('active');
+  el.classList.add('active');
+  el.querySelector('svg').setAttribute('stroke', '#9b7ee0');
+
+  if (tab === 'stats') renderStats();
+  if (tab === 'journal') renderJournal();
+  if (tab === 'home') renderHome();
+  if (tab === 'ai') renderAI();
+}
+
+// ===== MODAL =====
+function openModal() {
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.getElementById('dream-title').value = '';
+  document.getElementById('dream-body').value = '';
+  setType('normal', document.querySelector('.type-btn.normal'));
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+function setType(type, el) {
+  currentDreamType = type;
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ===== SAVE DREAM =====
+function saveDream() {
+  const title = document.getElementById('dream-title').value.trim();
+  const body = document.getElementById('dream-body').value.trim();
+  if (!title) { document.getElementById('dream-title').style.borderColor='rgba(239,68,68,0.5)'; return; }
+
+  const d = {
+    id: Date.now(),
+    title,
+    body,
+    type: currentDreamType,
+    date: new Date().toLocaleDateString(t('locale'), {day:'numeric',month:'long'}),
+    ts: Date.now()
+  };
+  dreams.unshift(d);
+  localStorage.setItem('dreamly_dreams', JSON.stringify(dreams));
+  closeModal();
+  renderHome();
+  renderJournal();
+  updateAIInput();
+  updateStats();
+  // Auto-show yozma
+  setTimeout(() => showYozma(d), 300);
+}
+
+// ===== RENDER HOME =====
+function renderHome() {
+  const count = dreams.length;
+  document.getElementById('home-count').textContent = count;
+  document.getElementById('home-zencir').textContent = getStreak();
+
+  const list = document.getElementById('home-dreams-list');
+  if (count === 0) {
+    list.innerHTML = `<div class="empty-state" id="home-empty">
+      <div class="empty-icon">🌙</div>
+      <div class="empty-title">${t('emptyTitle')}</div>
+      <div class="empty-sub">${t('emptySub')}</div>
+    </div>`;
+  } else {
+    list.innerHTML = dreams.slice(0,3).map(d => dreamCardHTML(d)).join('');
+  }
+}
+
+// ===== RENDER JOURNAL =====
+function renderJournal() {
+  const query = (document.getElementById('search-input')?.value || '').toLowerCase();
+  let filtered = dreams.filter(d => {
+    if (currentFilter !== 'all' && d.type !== currentFilter) return false;
+    if (query && !d.title.toLowerCase().includes(query) && !d.body.toLowerCase().includes(query)) return false;
+    return true;
+  });
+  const list = document.getElementById('journal-list');
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty-state" id="journal-empty"><div class="empty-icon">🌙</div><div class="empty-title">${t('emptyTitle')}</div></div>`;
+  } else {
+    list.innerHTML = filtered.map(d => dreamCardHTML(d)).join('');
+  }
+}
+
+function filterDreams() { renderJournal(); }
+function setFilter(f, el) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderJournal();
+}
+
+function dreamCardHTML(d) {
+  const tags = {normal: t('tagNormal'), happy: t('tagHappy'), nightmare: t('tagNightmare')};
+  const tagClass = {normal:'', happy:'happy', nightmare:'nightmare'};
+  return `<div class="dream-card ${tagClass[d.type] || ''}" onclick="showYozma(dreams.find(dr=>dr.id===${d.id}))">
+    <div class="dc-top">
+      <div class="dc-title">${d.title}</div>
+      <div class="dc-date">${d.date}</div>
+    </div>
+    ${d.body ? `<div class="dc-body">${d.body.substring(0,80)}${d.body.length>80?'...':''}</div>` : ''}
+    <div class="dc-tags">
+      <div class="dc-tag ${tagClass[d.type]}">${tags[d.type]}</div>
+      ${d.yozma ? `<div class="dc-tag" style="background:rgba(45,212,184,0.1);color:var(--teal);border-color:rgba(45,212,184,0.25);">🧠 Yozma</div>` : ''}
+    </div>
+  </div>`;
+}
+
+// ===== RENDER AI =====
+function renderAI() {
+  const hasD = dreams.length > 0;
+  document.getElementById('ai-empty').style.display = hasD ? 'none' : 'flex';
+  document.getElementById('ai-input-area').style.display = hasD ? 'flex' : 'none';
+}
+function updateAIInput() {
+  if (dreams.length > 0) {
+    document.getElementById('ai-empty').style.display = 'none';
+    document.getElementById('ai-input-area').style.display = 'flex';
+  }
+}
+
+let aiMessages = [];
+async function sendAI() {
+  const input = document.getElementById('ai-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+
+  const chat = document.getElementById('ai-chat');
+  // Add user msg
+  aiMessages.push({role:'user', content:text});
+  const uEl = document.createElement('div');
+  uEl.className = 'user-msg';
+  uEl.textContent = text;
+  chat.appendChild(uEl);
+
+  // Loading
+  const loadEl = document.createElement('div');
+  loadEl.className = 'ai-msg';
+  loadEl.innerHTML = `<div class="ai-label">🧠 DREAMLY AI</div><div class="loading-dots"><span></span><span></span><span></span></div>`;
+  chat.appendChild(loadEl);
+  chat.scrollTop = chat.scrollHeight;
+
+  const dreamContext = dreams.slice(0,5).map(d => `"${d.title}": ${d.body||'(mətn yoxdur)'}`).join('\n');
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: `${t('aiSystem')} İstifadəçinin yuxuları: ${dreamContext}`,
+        messages: aiMessages
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || t('aiNoReply');
+    aiMessages.push({role:'assistant', content:reply});
+    loadEl.innerHTML = `<div class="ai-label">🧠 DREAMLY AI</div>${reply}`;
+  } catch(e) {
+    loadEl.innerHTML = `<div class="ai-label">🧠 DREAMLY AI</div>${t('aiError')}`;
+  }
+  chat.scrollTop = chat.scrollHeight;
+}
+
+// ===== STATS =====
+function getStreak() {
+  if (dreams.length === 0) return 0;
+  const today = new Date().toDateString();
+  let streak = 0;
+  const d = new Date();
+  for (let i = 0; i < 30; i++) {
+    const ds = d.toDateString();
+    const has = dreams.some(dr => new Date(dr.ts).toDateString() === ds);
+    if (has) { streak++; d.setDate(d.getDate()-1); }
+    else break;
+  }
+  return streak;
+}
+
+function renderStats() {
+  document.getElementById('stat-total').textContent = dreams.length;
+  document.getElementById('stat-zencir').textContent = getStreak();
+
+  const longest = dreams.reduce((a,b) => (b.body||'').length>(a.body||'').length?b:a, {body:''});
+  const chars = (longest.body||'').length;
+  document.getElementById('rec-longest').textContent = (longest.title||'0') ? (longest.title||'0w').substring(0,8) : '0w';
+  document.getElementById('rec-chars').textContent = chars;
+  const nightmares = dreams.filter(d=>d.type==='nightmare').length;
+  document.getElementById('rec-nightmare').textContent = nightmares;
+
+  // Week chart
+  const chart = document.getElementById('week-chart');
+  const days = ['B.e','Ç.a','Ç','C.a','C','Ş','B'];
+  const today = new Date().getDay();
+  chart.innerHTML = days.map((day,i) => {
+    const isToday = i === today;
+    const h = Math.random()*50+5;
+    return `<div class="week-bar-wrap">
+      <div class="week-bar ${isToday?'today':''}" style="height:${h}px"></div>
+    </div>`;
+  }).join('');
+
+  // Calendar
+  buildCalendar();
+}
+
+function buildCalendar() {
+  const grid = document.getElementById('cal-grid');
+  const now = new Date();
+  const year = now.getFullYear(), month = now.getMonth();
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const heads = t('calHeads');
+  let html = heads.map(h=>`<div class="cal-head">${h}</div>`).join('');
+  const offset = (firstDay+6)%7;
+  for(let i=0;i<offset;i++) html+=`<div class="cal-day empty"></div>`;
+  for(let i=1;i<=daysInMonth;i++){
+    const isToday = i===now.getDate();
+    const hasDream = dreams.some(d=>{const dd=new Date(d.ts);return dd.getDate()===i&&dd.getMonth()===month&&dd.getFullYear()===year;});
+    html+=`<div class="cal-day ${isToday?'today':''} ${hasDream?'has-dream':''}">${i}</div>`;
+  }
+  grid.innerHTML = html;
+  // Update legend text
+  const calleg = document.querySelectorAll('.cal-legend span');
+  const T = TRANSLATIONS[currentLang];
+  calleg.forEach((el,i) => {
+    const dot = el.querySelector('.dot');
+    if(dot) el.innerHTML = dot.outerHTML + (T.calLegend[i]||'');
+  });
+}
+
+function updateStats() {
+  document.getElementById('stat-total').textContent = dreams.length;
+  document.getElementById('stat-zencir').textContent = getStreak();
+}
+
+// ===== YOZMA (Dream Interpretation) =====
+function closeYozma() {
+  document.getElementById('yozma-overlay').classList.remove('open');
+}
+function closeYozmaOutside(e) {
+  if (e.target === document.getElementById('yozma-overlay')) closeYozma();
+}
+
+async function showYozma(dream) {
+  const overlay = document.getElementById('yozma-overlay');
+  overlay.classList.add('open');
+  document.getElementById('yozma-title').textContent = dream.title;
+  document.getElementById('yozma-dream-info').innerHTML =
+    `<strong style="color:var(--text)">${dream.title}</strong><br>${dream.body || ''}`;
+  document.getElementById('yozma-content').innerHTML = `
+    <div style="display:flex;align-items:center;gap:8px;color:var(--purple-light);font-size:12px;">
+      <div class="loading-dots"><span></span><span></span><span></span></div>
+      <span>${currentLang==='tr'?'Rüyanız analiz ediliyor...':currentLang==='en'?'Analyzing your dream...':currentLang==='ru'?'Анализируем ваш сон...':'Yuxunuz analiz edilir...'}</span>
+    </div>`;
+
+  const typeLabels = {az:{normal:'Normal',happy:'Xoş yuxu',nightmare:'Kabus'},tr:{normal:'Normal',happy:'Güzel rüya',nightmare:'Kabus'},en:{normal:'Normal',happy:'Good dream',nightmare:'Nightmare'},ru:{normal:'Обычный',happy:'Хороший',nightmare:'Кошмар'}};
+  const tl = typeLabels[currentLang] || typeLabels.az;
+
+  const prompts = {
+    az: `Aşağıdakı yuxunu psixoloji, simvolik və mənəvi baxımdan yoz. Yuxu növü: "${tl[dream.type]||dream.type}". Yuxu başlığı: "${dream.title}". Məzmun: "${dream.body||'(təsvir yoxdur)'}". Cavabı 3-4 cümlə ilə ver, praktik tövsiyə ilə bitir.`,
+    tr: `Aşağıdaki rüyayı psikolojik, sembolik ve manevi açıdan yorumla. Rüya türü: "${tl[dream.type]||dream.type}". Başlık: "${dream.title}". İçerik: "${dream.body||'(açıklama yok)'}". 3-4 cümle ile yanıtla, pratik bir öneriyle bitir.`,
+    en: `Interpret the following dream psychologically, symbolically and spiritually. Dream type: "${tl[dream.type]||dream.type}". Title: "${dream.title}". Content: "${dream.body||'(no description)'}". Give a 3-4 sentence response, end with a practical insight.`,
+    ru: `Интерпретируй следующий сон психологически, символически и духовно. Тип сна: "${tl[dream.type]||dream.type}". Название: "${dream.title}". Содержание: "${dream.body||'(нет описания)'}". Ответь 3-4 предложениями, заверши практическим советом.`
+  };
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: t('aiSystem'),
+        messages: [{role:'user', content: prompts[currentLang] || prompts.az}]
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || t('aiNoReply');
+    // Format nicely
+    const paragraphs = reply.split('\n').filter(p=>p.trim()).map(p=>`<p style="margin-bottom:10px;">${p}</p>`).join('');
+    document.getElementById('yozma-content').innerHTML = paragraphs || `<p>${reply}</p>`;
+    // Save yozma to dream
+    const idx = dreams.findIndex(d=>d.id===dream.id);
+    if(idx>=0) { dreams[idx].yozma = reply; localStorage.setItem('dreamly_dreams', JSON.stringify(dreams)); }
+  } catch(e) {
+    document.getElementById('yozma-content').innerHTML = `<p style="color:#f87171;">${t('aiError')}</p>`;
+  }
+}
+
+
+function setLang(el) {
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  const map = {'Azərbaycan':'az','Türkçe':'tr','English':'en','Русский':'ru'};
+  currentLang = map[el.textContent.trim()] || 'az';
+  localStorage.setItem('dreamly_lang', currentLang);
+  applyLanguage();
+}
+function toggleNotif(item) {
+  const t = document.getElementById('notif-toggle');
+  t.classList.toggle('off');
+}
+function switchPeriod(el) {
+  document.querySelectorAll('.period-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ===== INIT =====
+// Set correct lang button active on load
+const langMap = {az:'Azərbaycan', tr:'Türkçe', en:'English', ru:'Русский'};
+document.querySelectorAll('.lang-btn').forEach(b => {
+  b.classList.toggle('active', b.textContent.trim() === langMap[currentLang]);
+});
+applyLanguage();
+renderHome();
+buildCalendar();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').then(reg => {
+      console.log('SW registered:', reg.scope);
+    }).catch(err => console.log('SW error:', err));
+  });
+}
+
+// PWA Install prompt
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('install-btn').style.display = 'flex';
+});
+window.addEventListener('appinstalled', () => {
+  document.getElementById('install-btn').style.display = 'none';
+  deferredPrompt = null;
+});
+function installPWA() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(choice => {
+      deferredPrompt = null;
+      document.getElementById('install-btn').style.display = 'none';
+    });
+  }
+}
+</script>
+</body>
+</html>
